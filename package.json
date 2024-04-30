@@ -3,7 +3,7 @@
   "name": "meta-json-schema",
   "displayName": "Meta JSON Schema",
   "description": "Meta JSON Schema",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "categories": [
     "Linters",
     "Snippets"
@@ -20,21 +20,13 @@
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "meta-json-schema2.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
+  "contributes": {},
   "scripts": {
     "dev": "vite build --watch",
     "package": "vite build --mode production && vsce package --allow-missing-repository",
     "publish": "vsce publish"
   },
   "dependencies": {
-    "deep-equal": "^2.2.3",
     "path": "^0.12.7"
   },
   "devDependencies": {
