@@ -1,0 +1,48 @@
+{
+  "publisher": "ClashMeta",
+  "name": "meta-json-schema",
+  "displayName": "Meta JSON Schema",
+  "description": "Meta JSON Schema",
+  "version": "0.0.1",
+  "categories": [
+    "Linters",
+    "Snippets"
+  ],
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "extensionDependencies": [
+    "redhat.vscode-yaml",
+    "usernamehw.errorlens"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "meta-json-schema2.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "package": "vite build --mode production && vsce package --allow-missing-repository",
+    "publish": "vsce publish"
+  },
+  "dependencies": {
+    "deep-equal": "^2.2.3",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.88.0",
+    "@vscode/vsce": "^2.26.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10"
+  }
+}
