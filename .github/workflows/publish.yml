@@ -1,0 +1,27 @@
+name: publish extension to marketplace
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bundle package
+        run: npm run package
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    steps:
+      - name: Publish to marketplace
+        run: npm run publish
