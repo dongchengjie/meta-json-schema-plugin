@@ -18,7 +18,7 @@ const querySchemas = () => {
   const schemas = vscode.workspace.getConfiguration("yaml").get("schemas") as { [key: string]: string | string[] };
   for (let schema in schemas) {
     schemas[schema] = schemas[schema] ?? [];
-    schemas[schema] = Array.isArray(schemas[schema]) ? schemas[schema] : [...schemas[schema]].filter(Boolean);
+    schemas[schema] = Array.isArray(schemas[schema]) ? schemas[schema] : [schemas[schema] as string].filter(Boolean);
   }
   return schemas;
 };
