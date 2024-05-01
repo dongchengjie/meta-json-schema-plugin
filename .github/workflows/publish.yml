@@ -6,8 +6,10 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,11 +19,5 @@ jobs:
       - name: Bundle package
         run: npm run package
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      VSCE_PAT: ${{ secrets.VSCE_PAT }}
-    steps:
       - name: Publish to marketplace
         run: npm run publish
