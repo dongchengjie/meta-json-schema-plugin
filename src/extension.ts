@@ -1,12 +1,9 @@
 import * as vscode from "vscode";
 import path from "path";
-import { getLogger } from "./util/message";
 import { register, unregister } from "./util/schemas";
 import { fileMatch, MatchResult } from "./util/file";
-
-const schemaURL = `https://fastly.jsdelivr.net/gh/dongchengjie/meta-json-schema@main/schemas/meta-json-schema.json`;
-
-let logger: vscode.OutputChannel;
+import { fetchSchema } from "./util/storage";
+import { initStorage, schemaURI } from "./util/storage";
 
 // 发生变化回调
 type Action = "register" | "unregister" | "none";
@@ -17,20 +14,28 @@ const onChange = (document: vscode.TextDocument | undefined, getAction: (match: 
     const action = getAction(result);
     if (action === "register") {
       vscode.languages.setTextDocumentLanguage(document, "yaml");
-      register(schemaURL, [fileName]);
+      register(schemaURI(), [fileName]);
       logger.appendLine(`register: ${fileName}`);
     } else if (action === "unregister") {
-      unregister(schemaURL, [fileName]);
+      unregister(schemaURI(), [fileName]);
       logger.appendLine(`unregister: ${fileName}`);
     }
   }
 };
 
-export function activate(context: vscode.ExtensionContext) {
-  // 初始化输出
-  logger = getLogger(context);
-  // 清空Schema配置
-  unregister(schemaURL);
+const defaultSchemaURL =
+  "https://fastly.jsdelivr.net/gh/dongchengjie/meta-json-schema@main/schemas/meta-json-schema.json";
+
+export let logger: vscode.OutputChannel;
+
+export async function activate(context: vscode.ExtensionContext) {
+  // 初始化
+  let schemaURL = vscode.workspace.getConfiguration(context.extension.packageJSON.name).get("schemaURL") as string;
+  schemaURL = schemaURL ?? defaultSchemaURL;
+  logger = vscode.window.createOutputChannel(context.extension.packageJSON.displayName);
+  initStorage(context);
+  unregister(schemaURI()); // 清空Schema配置
+  await fetchSchema(schemaURL); // 下载schema文件
 
   // 监听标签页激活
   vscode.window.onDidChangeActiveTextEditor(_ => {
@@ -68,5 +73,5 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  unregister(schemaURL);
+  unregister(schemaURI());
 }

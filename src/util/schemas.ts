@@ -16,8 +16,9 @@ export const unregister = (schema: string, patterns?: string[]) => {
 
 const querySchemas = () => {
   const schemas = vscode.workspace.getConfiguration("yaml").get("schemas") as { [key: string]: string | string[] };
-  for (let key in schemas) {
-    schemas[key] = Array.isArray(schemas[key]) ? schemas[key] : [schemas[key]].filter(Boolean);
+  for (let schema in schemas) {
+    schemas[schema] = schemas[schema] ?? [];
+    schemas[schema] = Array.isArray(schemas[schema]) ? schemas[schema] : [...schemas[schema]].filter(Boolean);
   }
   return schemas;
 };
