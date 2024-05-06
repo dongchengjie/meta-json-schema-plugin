@@ -5,8 +5,10 @@ import { fileMatch, MatchResult } from "./util/file";
 import { fetchSchema } from "./util/storage";
 import { initStorage, schemaURI } from "./util/storage";
 
-// 发生变化回调
+export let logger: vscode.OutputChannel;
 type Action = "register" | "unregister" | "none";
+
+// 发生变化回调
 const onChange = (document: vscode.TextDocument | undefined, getAction: (match: MatchResult) => Action) => {
   if (document) {
     const fileName = path.basename(document.fileName ?? "unknown.txt");
@@ -23,15 +25,12 @@ const onChange = (document: vscode.TextDocument | undefined, getAction: (match: 
   }
 };
 
-const defaultSchemaURL =
-  "https://fastly.jsdelivr.net/gh/dongchengjie/meta-json-schema@main/schemas/meta-json-schema.json";
-
-export let logger: vscode.OutputChannel;
-
 export async function activate(context: vscode.ExtensionContext) {
+  // 扩展配置
+  const configuration = vscode.workspace.getConfiguration(context.extension.packageJSON.name);
+  const schemaURL = configuration.schemaURL as string;
+
   // 初始化
-  let schemaURL = vscode.workspace.getConfiguration(context.extension.packageJSON.name).get("schemaURL") as string;
-  schemaURL = schemaURL ?? defaultSchemaURL;
   logger = vscode.window.createOutputChannel(context.extension.packageJSON.displayName);
   initStorage(context);
   unregister(schemaURI()); // 清空Schema配置

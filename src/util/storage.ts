@@ -19,11 +19,18 @@ export const schemaURI = (): string => {
 };
 
 export const fetchSchema = async (schemaURL: string) => {
-  await axios.get(schemaURL).then(response => {
-    try {
-      vscode.workspace.fs.writeFile(schemaLocation(), Buffer.from(JSON.stringify(response.data), "utf8"));
-    } catch (error) {
+  await axios
+    .get(schemaURL)
+    .then(response => {
+      try {
+        vscode.workspace.fs.writeFile(schemaLocation(), Buffer.from(JSON.stringify(response.data), "utf8"));
+      } catch (error) {
+        vscode.window.showErrorMessage(`Error wrting schema file: ${error}`);
+        logger.appendLine(`Error wrting schema file: ${error}`);
+      }
+    })
+    .catch(error => {
+      vscode.window.showErrorMessage(`Error fetching schema from: ${schemaURL}, ${error}`);
       logger.appendLine(`Error fetching schema: ${error}`);
-    }
-  });
+    });
 };
