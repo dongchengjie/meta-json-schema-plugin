@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import path from "path";
-import { register, unregister } from "./util/schemas";
+import { fetchSchema, schemaFileName } from "./util/storage";
 import { fileMatch, MatchResult } from "./util/file";
-import { fetchSchema } from "./util/storage";
-import { initStorage, schemaURI } from "./util/storage";
+import { getContext, initContext } from "./util/context";
+import { register, unregister, querySchemas } from "./util/schemas";
+import { schemaURI } from "./util/storage";
 
 export let logger: vscode.OutputChannel;
 type Action = "register" | "unregister" | "none";
@@ -26,15 +27,17 @@ const onChange = (document: vscode.TextDocument | undefined, getAction: (match: 
 };
 
 export async function activate(context: vscode.ExtensionContext) {
-  // 扩展配置
+  // 初始化
+  initContext(context);
+  logger = vscode.window.createOutputChannel(context.extension.packageJSON.displayName);
+  unregisterAll(); // 清除Schema配置
+
+  // 读取扩展配置
   const configuration = vscode.workspace.getConfiguration(context.extension.packageJSON.name);
   const schemaURL = configuration.schemaURL as string;
 
-  // 初始化
-  logger = vscode.window.createOutputChannel(context.extension.packageJSON.displayName);
-  initStorage(context);
-  unregister(schemaURI()); // 清空Schema配置
-  await fetchSchema(schemaURL); // 下载schema文件
+  // 下载schema文件
+  await fetchSchema(schemaURL);
 
   // 监听标签页激活
   vscode.window.onDidChangeActiveTextEditor(_ => {
@@ -71,6 +74,18 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 }
 
+const unregisterAll = () => {
+  const publisher = getContext().extension.packageJSON.publisher;
+  const extensionName = getContext().extension.packageJSON.name;
+  const fullName = `${publisher}.${extensionName}`.toLowerCase();
+  const schemas = querySchemas();
+  for (let schema in schemas) {
+    if (schema.includes(fullName) && schema.includes(schemaFileName)) {
+      unregister(schema);
+    }
+  }
+};
+
 export function deactivate() {
-  unregister(schemaURI());
+  unregisterAll();
 }

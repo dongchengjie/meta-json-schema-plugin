@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2024-05-15
+
+### Changed
+
+- 获取 schema 文件时，文件链接后追加 `?t=xxx` 防止缓存
+
+### Fixed
+
+- 保存 schema 文件的扩展名错误
+
 ## [1.0.4] - 2024-05-06
 
 ### Changed

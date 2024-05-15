@@ -8,13 +8,18 @@ export const register = (schema: string, patterns: string[]) => {
 };
 
 export const unregister = (schema: string, patterns?: string[]) => {
-  const schemas = querySchemas();
-  schemas[schema] = schemas[schema] ?? [];
-  schemas[schema] = [...schemas[schema]].filter(match => patterns && !patterns.includes(match));
+  let schemas = querySchemas();
+  if (!patterns) {
+    const { [schema]: deletedKey, ...newObj } = schemas;
+    schemas = newObj;
+  } else {
+    schemas[schema] = schemas[schema] ?? [];
+    schemas[schema] = [...schemas[schema]].filter(match => patterns && !patterns.includes(match));
+  }
   updateSchemas(schemas);
 };
 
-const querySchemas = () => {
+export const querySchemas = () => {
   const schemas = vscode.workspace.getConfiguration("yaml").get("schemas") as { [key: string]: string | string[] };
   for (let schema in schemas) {
     schemas[schema] = schemas[schema] ?? [];

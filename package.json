@@ -1,11 +1,11 @@
 {
   "name": "meta-json-schema",
   "displayName": "Meta JSON Schema",
-  "description": "A linter and snippet provider for Clash.Meta configuration.",
+  "description": "A linter and snippet provider for Clash.Meta(mihomo) configuration.",
   "author": "dongchengjie",
   "contributors": [],
   "license": "MIT",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "ClashMeta",
   "bugs": "https://github.com/dongchengjie/meta-json-schema-plugin/issues",
   "repository": {
@@ -54,15 +54,17 @@
     "usernamehw.errorlens"
   ],
   "scripts": {
-    "dev": "tsc -watch -p ./",
-    "package": "tsc -p ./ && vsce package",
-    "publish": "vsce publish"
+    "dev": "cross-var tsc -watch -p ./",
+    "install": "cross-var code --install-extension meta-json-schema-$npm_package_version.vsix",
+    "package": "cross-var tsc -p ./ && vsce package",
+    "publish": "cross-var vsce publish"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/vscode": "^1.63.0",
     "@vscode/vsce": "^2.26.0",
+    "cross-var": "^1.1.0",
     "typescript": "^5.4.5"
   },
   "dependencies": {
